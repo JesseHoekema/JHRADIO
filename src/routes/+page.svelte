@@ -193,6 +193,10 @@
 {/key}
 <div class="absolute inset-0 z-0 bg-black/50"></div>
 
+<div class="fixed top-5 right-5 z-30">
+  <img src="/assets/logo-removebg.png" alt="JHRADIO logo" class="w-14">
+</div>
+
 <div class="fixed top-5 left-5 z-30">
   <MenuButton />
 </div>
