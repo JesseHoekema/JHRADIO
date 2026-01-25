@@ -48,3 +48,24 @@ export async function fetchNowPlaying(): Promise<NowPlaying> {
 
   return res.json();
 }
+export async function fetchSchedule(): Promise<any> {
+  const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/schedule`;
+
+  const res = await fetch(url);
+
+  if (!res.ok) {
+    throw new Error(`AzuraCast API error: ${res.status}`);
+  }
+
+  return res.json();
+}
+export async function fetchScheduleWeek(start: string, end: string): Promise<any> {
+  // AzuraCast schedule API accepts ISO date strings for start and end
+  const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/schedule?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`AzuraCast API error: ${res.status}`);
+  }
+  return res.json();
+}

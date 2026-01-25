@@ -8,9 +8,27 @@ importers:
 
   .:
     dependencies:
+      '@fullcalendar/common':
+        specifier: ^5.11.5
+        version: 5.11.5
+      '@fullcalendar/core':
+        specifier: ^6.1.20
+        version: 6.1.20
+      '@fullcalendar/daygrid':
+        specifier: ^6.1.20
+        version: 6.1.20(@fullcalendar/core@6.1.20)
+      '@fullcalendar/interaction':
+        specifier: ^6.1.20
+        version: 6.1.20(@fullcalendar/core@6.1.20)
+      '@fullcalendar/timegrid':
+        specifier: ^6.1.20
+        version: 6.1.20(@fullcalendar/core@6.1.20)
       '@lucide/svelte':
         specifier: ^0.563.1
         version: 0.563.1(svelte@5.48.1)
+      fullcalendar-svelte:
+        specifier: ^0.0.1
+        version: 0.0.1(svelte@5.48.1)
       svelte-motion:
         specifier: ^0.12.2
         version: 0.12.2(svelte@5.48.1)
@@ -33,6 +51,12 @@ importers:
       svelte-check:
         specifier: ^4.3.4
         version: 4.3.5(picomatch@4.0.3)(svelte@5.48.1)(typescript@5.9.3)
+      svelte-fullcalendar:
+        specifier: ^3.0.0
+        version: 3.0.0(@fullcalendar/core@6.1.20)
+      svelte-preprocess:
+        specifier: ^6.0.3
+        version: 6.0.3(postcss@8.5.6)(svelte@5.48.1)(typescript@5.9.3)
       tailwindcss:
         specifier: ^4.1.17
         version: 4.1.18
@@ -200,6 +224,27 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@fullcalendar/common@5.11.5':
+    resolution: {integrity: sha512-3iAYiUbHXhjSVXnYWz27Od2cslztUPsOwiwKlfGvQxBixv2Kl6a8IPwaijKFYJHXdwYmfPoEgK7rvqAGVoIYwA==}
+
+  '@fullcalendar/core@6.1.20':
+    resolution: {integrity: sha512-1cukXLlePFiJ8YKXn/4tMKsy0etxYLCkXk8nUCFi11nRONF2Ba2CD5b21/ovtOO2tL6afTJfwmc1ed3HG7eB1g==}
+
+  '@fullcalendar/daygrid@6.1.20':
+    resolution: {integrity: sha512-AO9vqhkLP77EesmJzuU+IGXgxNulsA8mgQHynclJ8U70vSwAVnbcLG9qftiTAFSlZjiY/NvhE7sflve6cJelyQ==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.20
+
+  '@fullcalendar/interaction@6.1.20':
+    resolution: {integrity: sha512-p6txmc5txL0bMiPaJxe2ip6o0T384TyoD2KGdsU6UjZ5yoBlaY+dg7kxfnYKpYMzEJLG58n+URrHr2PgNL2fyA==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.20
+
+  '@fullcalendar/timegrid@6.1.20':
+    resolution: {integrity: sha512-4H+/MWbz3ntA50lrPif+7TsvMeX3R1GSYjiLULz0+zEJ7/Yfd9pupZmAwUs/PBpA6aAcFmeRr0laWfcz1a9V1A==}
+    peerDependencies:
+      '@fullcalendar/core': ~6.1.20
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -567,6 +612,11 @@ packages:
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
     os: [darwin]
 
+  fullcalendar-svelte@0.0.1:
+    resolution: {integrity: sha512-GhCAN9EBOwPb/RaVgFeatpvMcHQkQQ3nE3Rxjma6pLtncVznO1GNyqIBfitIHnOYZaz1q5YdDJ2s4BkjskmLhw==}
+    peerDependencies:
+      svelte: ^5.0.0
+
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
@@ -690,6 +740,9 @@ packages:
     resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
     engines: {node: ^10 || ^12 || >=14}
 
+  preact@10.12.1:
+    resolution: {integrity: sha512-l8386ixSsBdbreOAkqtrwqHwdvR35ID8c3rKPa8lCWuO86dBi32QWHV4vfsZK1utLLFMvw+Z5Ad4XLkZzchscg==}
+
   readdirp@4.1.2:
     resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
     engines: {node: '>= 14.18.0'}
@@ -725,10 +778,52 @@ packages:
       svelte: ^4.0.0 || ^5.0.0-next.0
       typescript: '>=5.0.0'
 
+  svelte-fullcalendar@3.0.0:
+    resolution: {integrity: sha512-dYRExMFQVTR+a/k6xv2TVUU3WddGdW3HhHPKx6xMzyJnQe6hDjdSAeZ4fMcP/vg2HEVL17Zgzio4hAMczVUpDA==}
+    peerDependencies:
+      '@fullcalendar/core': ^6.0.0
+
   svelte-motion@0.12.2:
     resolution: {integrity: sha512-7RrdRz9iVP55B9HT/C0hYW3pyrKlF61kAby/AkDtOAP0uHFQDrfd0qQetDC81cEsK9b40jt+jfcqSAXcA7LPEw==}
     peerDependencies:
       svelte: '>=3.35.0 || ^4.0.0 || ^5.0.0 || ^5.0.0-next.0'
+
+  svelte-preprocess@6.0.3:
+    resolution: {integrity: sha512-PLG2k05qHdhmRG7zR/dyo5qKvakhm8IJ+hD2eFRQmMLHp7X3eJnjeupUtvuRpbNiF31RjVw45W+abDwHEmP5OA==}
+    engines: {node: '>= 18.0.0'}
+    peerDependencies:
+      '@babel/core': ^7.10.2
+      coffeescript: ^2.5.1
+      less: ^3.11.3 || ^4.0.0
+      postcss: ^7 || ^8
+      postcss-load-config: '>=3'
+      pug: ^3.0.0
+      sass: ^1.26.8
+      stylus: '>=0.55'
+      sugarss: ^2.0.0 || ^3.0.0 || ^4.0.0
+      svelte: ^4.0.0 || ^5.0.0-next.100 || ^5.0.0
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      coffeescript:
+        optional: true
+      less:
+        optional: true
+      postcss:
+        optional: true
+      postcss-load-config:
+        optional: true
+      pug:
+        optional: true
+      sass:
+        optional: true
+      stylus:
+        optional: true
+      sugarss:
+        optional: true
+      typescript:
+        optional: true
 
   svelte@5.48.1:
     resolution: {integrity: sha512-gHdOWQILqvQgqvILjEd87yKy6OKHWlWu7hILXoxvEUo9+iPQ1snPHiR7IGiwRdaC1a9GWC8oWN6QSpQEIb28VQ==}
@@ -890,6 +985,27 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.2':
     optional: true
+
+  '@fullcalendar/common@5.11.5':
+    dependencies:
+      tslib: 2.8.1
+
+  '@fullcalendar/core@6.1.20':
+    dependencies:
+      preact: 10.12.1
+
+  '@fullcalendar/daygrid@6.1.20(@fullcalendar/core@6.1.20)':
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+
+  '@fullcalendar/interaction@6.1.20(@fullcalendar/core@6.1.20)':
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+
+  '@fullcalendar/timegrid@6.1.20(@fullcalendar/core@6.1.20)':
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+      '@fullcalendar/daygrid': 6.1.20(@fullcalendar/core@6.1.20)
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:
@@ -1191,6 +1307,11 @@ snapshots:
   fsevents@2.3.3:
     optional: true
 
+  fullcalendar-svelte@0.0.1(svelte@5.48.1):
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+      svelte: 5.48.1
+
   graceful-fs@4.2.11: {}
 
   hey-listen@1.0.8: {}
@@ -1283,6 +1404,8 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
+  preact@10.12.1: {}
+
   readdirp@4.1.2: {}
 
   rollup@4.56.0:
@@ -1347,6 +1470,12 @@ snapshots:
     transitivePeerDependencies:
       - picomatch
 
+  svelte-fullcalendar@3.0.0(@fullcalendar/core@6.1.20):
+    dependencies:
+      '@fullcalendar/core': 6.1.20
+    optionalDependencies:
+      '@fullcalendar/interaction': 6.1.20(@fullcalendar/core@6.1.20)
+
   svelte-motion@0.12.2(svelte@5.48.1):
     dependencies:
       '@types/react': 18.3.27
@@ -1355,6 +1484,13 @@ snapshots:
       style-value-types: 5.1.2
       svelte: 5.48.1
       tslib: 2.8.1
+
+  svelte-preprocess@6.0.3(postcss@8.5.6)(svelte@5.48.1)(typescript@5.9.3):
+    dependencies:
+      svelte: 5.48.1
+    optionalDependencies:
+      postcss: 8.5.6
+      typescript: 5.9.3
 
   svelte@5.48.1:
     dependencies:

@@ -1,9 +1,10 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { fade, slide, fly } from "svelte/transition";
+  import { fade, slide } from "svelte/transition";
   import type { NowPlaying } from "$lib/azura";
   import { config } from "$lib/azura";
-  import { X, Menu, Calendar, Send, Music, Play, Pause } from "@lucide/svelte";
+  import { Play, Pause } from "@lucide/svelte";
+  import MenuButton from "$lib/components/MenuButton.svelte";
 
   const AZURA_WS_URL = `wss://${config.AZURA_BASE_URL.replace(/^https?:\/\//, "")}/api/live/nowplaying/websocket`;
   const STATION_NAME = config.AZURA_STATION;
@@ -19,7 +20,6 @@
   let currentTime: number = 0;
   let playerScale = 0.85;
   let playerOpacity = 0;
-  let menuState = false;
   let playerHovered = false;
   let isPlaying = true; // For demo, toggle with button
   let volume = 0.8;
@@ -137,42 +137,8 @@
 {/key}
 <div class="absolute inset-0 z-0 bg-black/50"></div>
 
-<div class="fixed top-5 left-5 z-30 flex items-start">
-  <button
-    class="text-white/60 bg-black/10 backdrop-blur-sm border border-white/10 rounded-xl p-2 w-9 h-9 flex items-center justify-center transition-all duration-200 hover:text-white hover:bg-black/30"
-    on:click={() => (menuState = !menuState)}
-  >
-    {#if menuState}
-      <X class="inline-block w-4 h-4" />
-    {:else}
-      <Menu class="inline-block w-4 h-4" />
-    {/if}
-  </button>
-  {#if menuState}
-    <div class="ml-3 flex items-center gap-3">
-      <button 
-        transition:fly={{ x: -20, duration: 300, delay: 0 }}
-        class="text-white/80 bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-2 flex items-center gap-2 transition-all duration-200 hover:text-white hover:bg-black/40 hover:border-white/20 text-sm whitespace-nowrap"
-      >
-        <Calendar class="w-4 h-4" />
-        Schedule
-      </button>
-      <button 
-        transition:fly={{ x: -20, duration: 300, delay: 100 }}
-        class="text-white/80 bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-2 flex items-center gap-2 transition-all duration-200 hover:text-white hover:bg-black/40 hover:border-white/20 text-sm whitespace-nowrap"
-      >
-        <Music class="w-4 h-4" />
-        Recently Played
-      </button>
-      <button 
-        transition:fly={{ x: -20, duration: 300, delay: 200 }}
-        class="text-white/80 bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-2 flex items-center gap-2 transition-all duration-200 hover:text-white hover:bg-black/40 hover:border-white/20 text-sm whitespace-nowrap"
-      >
-        <Send class="w-4 h-4" />
-        Request
-      </button>
-    </div>
-  {/if}
+<div class="fixed top-5 left-5 z-30">
+  <MenuButton />
 </div>
 
 {#if nowPlaying}
