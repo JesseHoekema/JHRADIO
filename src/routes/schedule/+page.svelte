@@ -433,7 +433,7 @@
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    background: rgba(42, 42, 42, 0.7);
+    background: rgba(42, 42, 42, 0.4);
     color: #9ca3af;
     border: 1px solid #3a3a3a;
     display: flex;

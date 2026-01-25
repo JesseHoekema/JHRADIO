@@ -97,7 +97,7 @@
     width: 40px;
     height: 40px;
     border-radius: 8px;
-    background: rgba(42, 42, 42, 0.7);
+    background: rgba(42, 42, 42, 0.4);
     color: #9ca3af;
     border: 1px solid #3a3a3a;
     display: flex;
@@ -151,7 +151,7 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: rgba(42, 42, 42, 0.95);
+    background: rgba(42, 42, 42, 0.4);
     backdrop-filter: blur(8px);
     border: 1px solid #3a3a3a;
     border-radius: 8px;
