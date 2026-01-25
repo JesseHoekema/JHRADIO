@@ -163,7 +163,20 @@
   });
 
   onMount(() => {
-    // dev(s) thi button bypasses the autoplay restrictions
+    // dev(s) thi button bypasses the autoplay restrictions also loop until audio is playing
+    let playTries = 0;
+    function tryPlayAudio() {
+      if (!audioEl) return;
+      audioEl.play().then(() => {
+        isPlaying = true;
+      }).catch(() => {
+        if (playTries < 10 && !isPlaying) {
+          playTries++;
+          setTimeout(tryPlayAudio, 400);
+        }
+      });
+    }
+    tryPlayAudio();
     const hackPlayButton = document.getElementById("hack-btn-play") as HTMLButtonElement;
     hackPlayButton?.click();
     if (nowPlaying) {

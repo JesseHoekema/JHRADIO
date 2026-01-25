@@ -1,10 +1,10 @@
-const AZURA_BASE_URL = "https://azura.jessehoekema.com"; 
-const AZURA_STATION = "jhradio"; 
+const AZURA_BASE_URL = "https://azura.jessehoekema.com";
+const AZURA_STATION = "jhradio";
 
 export const config = {
-    AZURA_BASE_URL,
-    AZURA_STATION,
-    AZURA_MP3: `${AZURA_BASE_URL}/listen/${AZURA_STATION}/radio.mp3`
+  AZURA_BASE_URL,
+  AZURA_STATION,
+  AZURA_MP3: `${AZURA_BASE_URL}/listen/${AZURA_STATION}/radio.mp3`
 };
 
 export interface NowPlaying {
@@ -68,4 +68,51 @@ export async function fetchScheduleWeek(start: string, end: string): Promise<any
     throw new Error(`AzuraCast API error: ${res.status}`);
   }
   return res.json();
+}
+
+export interface SongHistoryEntry {
+  sh_id: number;
+  played_at: number;
+  duration: number;
+  playlist: string;
+  streamer: string;
+  is_request: boolean;
+  song: {
+    id: string;
+    art: string | null;
+    custom_fields: any[];
+    text: string;
+    artist: string;
+    title: string;
+    album: string;
+    genre: string;
+    isrc: string;
+    lyrics: string;
+  };
+}
+
+export function timeAgo(playedAt: number): string {
+  const now = Math.floor(Date.now() / 1000);
+  const diff = now - playedAt;
+  if (diff < 60) return `${diff}s ago`;
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
+export async function fetchRecentlyPlayed(): Promise<SongHistoryEntry[]> {
+  const url = `${AZURA_BASE_URL}/api/nowplaying/${AZURA_STATION}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`AzuraCast API error: ${res.status}`);
+  }
+  const data = await res.json();
+  return data.song_history as SongHistoryEntry[];
+}
+export const openLastFm = (artist: string, title: string) => {
+  if (artist && title) {
+    const encodedArtist = encodeURIComponent(artist);
+    const encodedTitle = encodeURIComponent(title);
+    window.open(`https://www.last.fm/music/${encodedArtist}/_/${encodedTitle}`, "_blank");
+  }
 }
