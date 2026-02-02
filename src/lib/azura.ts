@@ -116,3 +116,33 @@ export const openLastFm = (artist: string, title: string) => {
     window.open(`https://www.last.fm/music/${encodedArtist}/_/${encodedTitle}`, "_blank");
   }
 }
+export const getRequestableSongs = async (): Promise<SongHistoryEntry[]> => {
+  const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/requests`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`AzuraCast API error: ${res.status}`);
+  }
+  const data = await res.json();
+  return data as SongHistoryEntry[];
+}
+export const requestSong = async (songId: string): Promise<{ success: boolean; message: string }> => {
+  const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/request/${songId}`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ song_id: songId })
+  });
+  if (!res.ok) {
+    throw new Error(`AzuraCast API error: ${res.status}`);
+  }
+  const data = await res.json();
+  return data as { success: boolean; message: string };
+}
+export const formatRequestableSongsToDropdown = (songs: SongHistoryEntry[]) => {
+  return songs.map(song => ({
+    label: `${song.song.artist} - ${song.song.title}`,
+    value: song.song.id
+  }));
+}

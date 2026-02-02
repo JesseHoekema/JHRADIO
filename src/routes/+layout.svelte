@@ -80,6 +80,7 @@
 	}
 
 	onMount(() => {
+    	document.documentElement.classList.add("dark");
 		// Initialize with data from props
 		if (data.nowPlaying) {
 			nowPlaying = data.nowPlaying;

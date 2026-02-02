@@ -2,10 +2,12 @@
   import type { CalendarOptions } from "svelte-fullcalendar";
   import { onMount, tick } from "svelte";
   import { fetchScheduleWeek } from "$lib/azura";
+  import { getIdByShowTitle } from "$lib/management";
   import FullCalendar from "svelte-fullcalendar";
   import daygridPlugin from "@fullcalendar/daygrid";
   import timeGridPlugin from "@fullcalendar/timegrid";
   import MenuButton from "$lib/components/MenuButton.svelte";
+  import { goto } from "$app/navigation";
 
   export const data = $props();
 
@@ -263,8 +265,11 @@
       load();
     }
   }
-  function openShow(title: string) {
-    alert(`Show details for "${title}" would open here.`);
+  async function openShow(title: string) {
+    const id = await getIdByShowTitle(title);
+    if (!id) return;
+    const url = `/show/${id}`;
+    goto(url);
   }
 
   onMount(() => {
