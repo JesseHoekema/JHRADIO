@@ -13,8 +13,5 @@ export const load: PageServerLoad = async ({ request }) => {
 
   const { session, user } = result;
 
-  return {
-    session,
-    user
-  };
+  throw redirect(302, "/manage/dashboard/home");
 };

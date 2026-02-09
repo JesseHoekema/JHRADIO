@@ -60,7 +60,7 @@
         placeholder="Email" 
         bind:value={email}
         disabled={isLoading}
-        on:keydown={handleKeyDown}
+        onkeydown={handleKeyDown}
         class="max-w-full" 
       />
       <Input 
@@ -68,7 +68,7 @@
         placeholder="Password" 
         bind:value={password}
         disabled={isLoading}
-        on:keydown={handleKeyDown}
+        onkeydown={handleKeyDown}
         class="max-w-full mt-4" 
       />
       <Button 

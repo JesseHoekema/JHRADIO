@@ -6,28 +6,30 @@
   import * as Sidebar from "$lib/components/ui/sidebar/index.js";
   import NavUser from "$lib/components/nav-user.svelte";
   import { authClient } from "$lib/auth-client";
+  import { page } from "$app/stores";
 
   const session = authClient.useSession();
 
   const items = [
     {
       title: "Home",
-      url: "#",
+      url: "/manage/dashboard/home",
       icon: HouseIcon,
+      active: true,
     },
     {
       title: "Shows",
-      url: "#",
+      url: "/manage/dashboard/shows",
       icon: CalendarIcon,
     },
     {
       title: "Users",
-      url: "#",
+      url: "/manage/dashboard/users",
       icon: UsersIcon,
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/manage/dashboard/settings",
       icon: SettingsIcon,
     },
   ];
@@ -48,7 +50,7 @@
         <Sidebar.Menu>
           {#each items as item (item.title)}
             <Sidebar.MenuItem>
-              <Sidebar.MenuButton>
+              <Sidebar.MenuButton isActive={$page.url.pathname.includes(item.url)}>
                 {#snippet child({ props })}
                   <a href={item.url} {...props}>
                     <item.icon />
