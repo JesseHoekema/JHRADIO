@@ -3,6 +3,7 @@
   import HouseIcon from "@lucide/svelte/icons/house";
   import UsersIcon from "@lucide/svelte/icons/users";
   import SettingsIcon from "@lucide/svelte/icons/settings";
+  import RequestIcon from "@lucide/svelte/icons/clipboard-list";
   import * as Sidebar from "$lib/components/ui/sidebar/index.js";
   import NavUser from "$lib/components/nav-user.svelte";
   import { authClient } from "$lib/auth-client";
@@ -26,6 +27,11 @@
       title: "Users",
       url: "/manage/dashboard/users",
       icon: UsersIcon,
+    },
+    {
+      title: "Requests",
+      url: "/manage/dashboard/requests",
+      icon: RequestIcon,
     },
     {
       title: "Settings",

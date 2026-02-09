@@ -2,7 +2,6 @@
   import type { CalendarOptions } from "svelte-fullcalendar";
   import { onMount, tick } from "svelte";
   import { fetchScheduleWeek } from "$lib/azura";
-  import { getIdByShowTitle } from "$lib/management";
   import FullCalendar from "svelte-fullcalendar";
   import daygridPlugin from "@fullcalendar/daygrid";
   import timeGridPlugin from "@fullcalendar/timegrid";
@@ -266,7 +265,8 @@
     }
   }
   async function openShow(title: string) {
-    const id = await getIdByShowTitle(title);
+    const res = await fetch(`/api/show/by-title?title=${encodeURIComponent(title)}`);
+    const { id } = await res.json();
     if (!id) return;
     const url = `/show/${id}`;
     goto(url);
