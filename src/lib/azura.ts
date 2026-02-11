@@ -116,23 +116,35 @@ export const openLastFm = (artist: string, title: string) => {
     window.open(`https://www.last.fm/music/${encodedArtist}/_/${encodedTitle}`, "_blank");
   }
 }
-export const getRequestableSongs = async (): Promise<SongHistoryEntry[]> => {
+export interface RequestableSong {
+  request_id: string;
+  song: {
+    id: string;
+    art: string | null;
+    text: string;
+    artist: string;
+    title: string;
+    album: string;
+  };
+}
+
+export const getRequestableSongs = async (): Promise<RequestableSong[]> => {
   const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/requests`;
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`AzuraCast API error: ${res.status}`);
   }
   const data = await res.json();
-  return data as SongHistoryEntry[];
+  return data as RequestableSong[];
 }
-export const requestSong = async (songId: string): Promise<{ success: boolean; message: string }> => {
-  const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/request/${songId}`;
+export const requestSong = async (requestId: string): Promise<{ success: boolean; message: string }> => {
+  const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/request/${requestId}`;
   const res = await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
     },
-    body: JSON.stringify({ song_id: songId })
+    body: JSON.stringify({ request_id: requestId })
   });
   if (!res.ok) {
     throw new Error(`AzuraCast API error: ${res.status}`);
@@ -140,9 +152,9 @@ export const requestSong = async (songId: string): Promise<{ success: boolean; m
   const data = await res.json();
   return data as { success: boolean; message: string };
 }
-export const formatRequestableSongsToDropdown = (songs: SongHistoryEntry[]) => {
+export const formatRequestableSongsToDropdown = (songs: RequestableSong[]) => {
   return songs.map(song => ({
     label: `${song.song.artist} - ${song.song.title}`,
-    value: song.song.id
+    value: song.request_id
   }));
 }

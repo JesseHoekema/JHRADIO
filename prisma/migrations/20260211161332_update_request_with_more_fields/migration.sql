@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE `Request` ADD COLUMN `description` TEXT NULL,
+    ADD COLUMN `requestedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);
+

@@ -7,6 +7,7 @@
   import timeGridPlugin from "@fullcalendar/timegrid";
   import MenuButton from "$lib/components/MenuButton.svelte";
   import { goto } from "$app/navigation";
+  import { page } from "$app/stores";
 
   export const data = $props();
 
@@ -31,6 +32,48 @@
   let title = $state("");
   let loading = $state(false);
   let isMobile = $state(false);
+  let highlightName = $state<string | null>(null);
+  const highlightId = $derived(
+    (() => {
+      const value = $page.url.searchParams.get("highlight");
+      const parsed = value ? Number(value) : NaN;
+      return Number.isFinite(parsed) ? parsed : null;
+    })(),
+  );
+
+  $effect(() => {
+    if (highlightId === null) {
+      highlightName = null;
+      return;
+    }
+
+    const controller = new AbortController();
+
+    (async () => {
+      try {
+        const response = await fetch(`/api/show/by-id?id=${highlightId}`, {
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          highlightName = null;
+          return;
+        }
+        const payload = await response.json();
+        highlightName = payload.name ?? null;
+      } catch (error) {
+        if ((error as Error).name !== "AbortError") {
+          highlightName = null;
+        }
+      }
+    })();
+
+    return () => controller.abort();
+  });
+
+  function isHighlighted(title: string) {
+    if (!highlightName) return false;
+    return title.toLowerCase().trim() === highlightName.toLowerCase().trim();
+  }
 
   function formatRange(start: Date, end: Date) {
     const opts: Intl.DateTimeFormatOptions = {
@@ -162,9 +205,10 @@
                 minute: "2-digit",
                 hour12: false,
               });
+              const entryTitle = entry.name || entry.title || "Untitled";
               const item = {
                 id: `${entry.id || entry.start_timestamp}-${i}`,
-                title: entry.name || entry.title || "Untitled",
+                title: entryTitle,
                 description: entry.description,
                 top,
                 height,
@@ -373,7 +417,7 @@
                 {#each eventsByDay[i] ?? [] as ev}
                   <button onclick={() => openShow(ev.title)}>
                     <div
-                      class="event"
+                      class={`event ${isHighlighted(ev.title) ? "event-highlight" : ""}`}
                       style={`top:${ev.top}px; height:${ev.height}px`}
                     >
                       <div class="event-time">
@@ -611,6 +655,11 @@
       transform 0.1s,
       box-shadow 0.1s;
     z-index: 5;
+  }
+
+  .event-highlight {
+    background: #6C8EF0;
+    color: #fff;
   }
 
   .event:hover {

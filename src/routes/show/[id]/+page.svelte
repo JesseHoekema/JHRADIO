@@ -1,13 +1,35 @@
 <script lang="ts">
-  export let data;
+  import { Button } from "$lib/components/ui/button/index.js";
+  import MenuButton from "$lib/components/MenuButton.svelte";
+
+  type Show = {
+    id: number;
+    name: string;
+    description: string | null;
+  };
+
+  const props = $props<{ data: { show: Show } }>();
+  const data = $derived(props.data);
 </script>
 
+<div class="fixed top-5 left-5 z-20">
+  <MenuButton />
+</div>  
+
 <div class="main">
-    <div class="centered-box">
-      <div class="box-content">
-    <h1 class="text-3xl font-bold">Show ID: {data.id}</h1>
+  <div class="centered-box">
+    <div class="box-content">
+      <h1 class="text-3xl font-bold">{data.show.name}</h1>
+      <p class="mt-3 text-white/80">
+        {data.show.description ?? "No description yet."}
+      </p>
+      <div class="mt-6">
+        <Button href={`/schedule?highlight=${data.show.id}`} variant="outline">
+          Show In Schedule
+        </Button>
+      </div>
     </div>
-    </div>
+  </div>
 </div>
 
 <style>
