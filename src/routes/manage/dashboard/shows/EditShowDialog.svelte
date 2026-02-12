@@ -10,17 +10,30 @@
     description: string | null;
   };
 
-  const props = $props<{ show: Show; onUpdated: (show: Show) => void }>();
+  const props = $props<{
+    show: Show;
+    onUpdated: (show: Show) => void;
+    forceOpen?: boolean;
+  }>();
   const show = $derived(props.show);
   const onUpdated = props.onUpdated;
+  const forceOpen = $derived(props.forceOpen ?? false);
 
   let open = $state(false);
   let name = $state("");
   let description = $state("");
   let error = $state("");
   let isSubmitting = $state(false);
+  let forceHandled = $state(false);
 
   $effect(() => {
+    if (forceOpen && !forceHandled) {
+      open = true;
+      forceHandled = true;
+    }
+    if (!forceOpen) {
+      forceHandled = false;
+    }
     if (open) {
       name = show.name;
       description = show.description ?? "";

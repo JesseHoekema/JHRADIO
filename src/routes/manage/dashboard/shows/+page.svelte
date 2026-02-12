@@ -9,6 +9,8 @@
   import AddIcon from "@lucide/svelte/icons/plus";
   import EditShowDialog from "./EditShowDialog.svelte";
   import DeleteShowDialog from "./DeleteShowDialog.svelte";
+  import { page } from "$app/stores";
+  import { goto } from "$app/navigation";
 
   type Show = {
     id: number;
@@ -26,6 +28,12 @@
   let createDescription = $state("");
   let createError = $state("");
   let isCreating = $state(false);
+
+  const editId = $derived.by(() => {
+    const value = $page.url.searchParams.get("edit");
+    const parsed = value ? Number(value) : NaN;
+    return Number.isFinite(parsed) ? parsed : null;
+  });
 
   $effect(() => {
     if (!seededShows && data?.shows) {
@@ -75,6 +83,12 @@
 
   const handleUpdated = (updated: Show) => {
     shows = shows.map((show) => (show.id === updated.id ? updated : show));
+
+    if ($page.url.searchParams.get("edit") === String(updated.id)) {
+      const nextUrl = new URL($page.url);
+      nextUrl.searchParams.delete("edit");
+      goto(`${nextUrl.pathname}${nextUrl.search}`, { replaceState: true });
+    }
   };
 
   const handleDeleted = (id: number) => {
@@ -106,7 +120,11 @@
               <Card.Description>{show.description ?? "No description yet."}</Card.Description>
             </Card.Header>
             <Card.Content class="flex flex-wrap gap-2">
-              <EditShowDialog {show} onUpdated={handleUpdated} />
+              <EditShowDialog
+                {show}
+                onUpdated={handleUpdated}
+                forceOpen={editId === show.id}
+              />
               <DeleteShowDialog {show} onDeleted={handleDeleted} />
             </Card.Content>
           </Card.Root>

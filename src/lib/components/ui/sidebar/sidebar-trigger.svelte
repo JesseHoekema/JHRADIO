@@ -22,7 +22,7 @@
 	data-slot="sidebar-trigger"
 	variant="ghost"
 	size="icon"
-	class={cn("size-7", className)}
+	class={cn("size-7", className, "mt-2")}
 	type="button"
 	onclick={(e) => {
 		onclick?.(e);

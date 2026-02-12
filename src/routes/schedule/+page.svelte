@@ -8,9 +8,28 @@
   import MenuButton from "$lib/components/MenuButton.svelte";
   import { goto } from "$app/navigation";
   import { page } from "$app/stores";
+  import type { PageData } from "./$types";
 
-  export const data = $props();
+  const { data }: { data: PageData } = $props();
 
+  const normalizeTitle = (value: string) =>
+    value
+      .replace(/^\s*(playlist|show)\s*:\s*/i, "")
+      .trim()
+      .toLowerCase();
+  const showDescriptions = $derived(data.showDescriptions ?? {});
+  const showKeys = $derived(Object.keys(showDescriptions));
+
+  const resolveShowDescription = (entryTitle: string) => {
+    const normalized = normalizeTitle(entryTitle);
+    const exact = showDescriptions[normalized];
+    if (exact) return exact;
+
+    const fuzzyKey = showKeys.find(
+      (key) => normalized.includes(key) || key.includes(normalized)
+    );
+    return fuzzyKey ? showDescriptions[fuzzyKey] ?? null : null;
+  };
   const HOUR_HEIGHT = 74;
   const MINUTE_PX = HOUR_HEIGHT / 60;
   const DAY_BODY_HEIGHT = 24 * HOUR_HEIGHT;
@@ -22,7 +41,7 @@
   type EventItem = {
     id: string;
     title: string;
-    description?: string;
+    description?: string | null;
     top: number;
     height: number;
     startLabel: string;
@@ -206,10 +225,11 @@
                 hour12: false,
               });
               const entryTitle = entry.name || entry.title || "Untitled";
+              const showDescription = resolveShowDescription(entryTitle);
               const item = {
                 id: `${entry.id || entry.start_timestamp}-${i}`,
                 title: entryTitle,
-                description: entry.description,
+                description: showDescription,
                 top,
                 height,
                 startLabel,

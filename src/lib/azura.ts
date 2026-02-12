@@ -24,6 +24,7 @@ export interface NowPlaying {
     elapsed: number;
     duration: number;
     played_at: number;
+    playlist: string;
   };
   listeners: {
     total: number;
@@ -158,3 +159,64 @@ export const formatRequestableSongsToDropdown = (songs: RequestableSong[]) => {
     value: song.request_id
   }));
 }
+export const getCurrentListeners = async (): Promise<number> => {
+  const data = await fetchNowPlaying();
+  return data.listeners.total;
+}
+export const getCurrentShow = async (): Promise<string> => {
+  const data = await fetchNowPlaying();
+  return data.now_playing.playlist;
+}
+
+export type TodayScheduleItem = {
+  from: Date;
+  to: Date;
+  title: string;
+};
+
+export const fetchTodaySchedule = async (): Promise<TodayScheduleItem[]> => {
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  const end = new Date();
+  end.setHours(23, 59, 59, 999);
+
+  const schedule = await fetchScheduleWeek(start.toISOString(), end.toISOString());
+
+  return (schedule as any[])
+    .map((entry) => {
+      let s: Date | null = null;
+      let e: Date | null = null;
+
+      if (entry.start_timestamp) {
+        s = new Date(entry.start_timestamp * 1000);
+      } else if (entry.start) {
+        s = new Date(entry.start);
+      }
+
+      if (entry.end_timestamp) {
+        e = new Date(entry.end_timestamp * 1000);
+      } else if (entry.end) {
+        e = new Date(entry.end);
+      }
+
+      if (!s || !e) return null;
+
+      if (s.getTime() >= end.getTime() || e.getTime() <= start.getTime()) {
+        return null;
+      }
+
+      const title =
+        entry.name ??
+        entry.title ??
+        entry.show?.name ??
+        entry.playlist ??
+        "Untitled";
+
+      return {
+        from: s,
+        to: e,
+        title
+      } as TodayScheduleItem;
+    })
+    .filter((item): item is TodayScheduleItem => Boolean(item));
+};

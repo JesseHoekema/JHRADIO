@@ -14,7 +14,7 @@
 
 <div class="fixed top-5 left-5 z-20">
   <MenuButton />
-</div>  
+</div>
 
 <div class="main">
   <div class="centered-box">
@@ -27,6 +27,15 @@
         <Button href={`/schedule?highlight=${data.show.id}`} variant="outline">
           Show In Schedule
         </Button>
+        {#if data.isAdmin}
+          <Button
+            href={`/manage/dashboard/shows?edit=${data.show.id}`}
+            variant="outline"
+            class="ml-2"
+          >
+            Edit Show
+          </Button>
+        {/if}
       </div>
     </div>
   </div>
