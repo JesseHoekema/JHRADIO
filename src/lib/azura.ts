@@ -4,7 +4,7 @@ const AZURA_STATION = "jhradio";
 export const config = {
   AZURA_BASE_URL,
   AZURA_STATION,
-  AZURA_MP3: `${AZURA_BASE_URL}/listen/${AZURA_STATION}/radio.mp3`
+  AZURA_MP3: `${AZURA_BASE_URL}/listen/${AZURA_STATION}/radio.mp3`,
 };
 
 export interface NowPlaying {
@@ -60,7 +60,10 @@ export async function fetchSchedule(): Promise<any> {
 
   return res.json();
 }
-export async function fetchScheduleWeek(start: string, end: string): Promise<any> {
+export async function fetchScheduleWeek(
+  start: string,
+  end: string,
+): Promise<any> {
   // AzuraCast schedule API accepts ISO date strings for start and end
   const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/schedule?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
 
@@ -114,9 +117,12 @@ export const openLastFm = (artist: string, title: string) => {
   if (artist && title) {
     const encodedArtist = encodeURIComponent(artist);
     const encodedTitle = encodeURIComponent(title);
-    window.open(`https://www.last.fm/music/${encodedArtist}/_/${encodedTitle}`, "_blank");
+    window.open(
+      `https://www.last.fm/music/${encodedArtist}/_/${encodedTitle}`,
+      "_blank",
+    );
   }
-}
+};
 export interface RequestableSong {
   request_id: string;
   song: {
@@ -137,36 +143,38 @@ export const getRequestableSongs = async (): Promise<RequestableSong[]> => {
   }
   const data = await res.json();
   return data as RequestableSong[];
-}
-export const requestSong = async (requestId: string): Promise<{ success: boolean; message: string }> => {
+};
+export const requestSong = async (
+  requestId: string,
+): Promise<{ success: boolean; message: string }> => {
   const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/request/${requestId}`;
   const res = await fetch(url, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify({ request_id: requestId })
+    body: JSON.stringify({ request_id: requestId }),
   });
   if (!res.ok) {
     throw new Error(`AzuraCast API error: ${res.status}`);
   }
   const data = await res.json();
   return data as { success: boolean; message: string };
-}
+};
 export const formatRequestableSongsToDropdown = (songs: RequestableSong[]) => {
-  return songs.map(song => ({
+  return songs.map((song) => ({
     label: `${song.song.artist} - ${song.song.title}`,
-    value: song.request_id
+    value: song.request_id,
   }));
-}
+};
 export const getCurrentListeners = async (): Promise<number> => {
   const data = await fetchNowPlaying();
   return data.listeners.total;
-}
+};
 export const getCurrentShow = async (): Promise<string> => {
   const data = await fetchNowPlaying();
   return data.now_playing.playlist;
-}
+};
 
 export type TodayScheduleItem = {
   from: Date;
@@ -180,7 +188,10 @@ export const fetchTodaySchedule = async (): Promise<TodayScheduleItem[]> => {
   const end = new Date();
   end.setHours(23, 59, 59, 999);
 
-  const schedule = await fetchScheduleWeek(start.toISOString(), end.toISOString());
+  const schedule = await fetchScheduleWeek(
+    start.toISOString(),
+    end.toISOString(),
+  );
 
   return (schedule as any[])
     .map((entry) => {
@@ -215,8 +226,154 @@ export const fetchTodaySchedule = async (): Promise<TodayScheduleItem[]> => {
       return {
         from: s,
         to: e,
-        title
+        title,
       } as TodayScheduleItem;
     })
     .filter((item): item is TodayScheduleItem => Boolean(item));
 };
+
+// Listener types and functions
+export interface Listener {
+  ip: string;
+  user_agent: string;
+  hash: string;
+  mount_is_local: boolean;
+  mount_name: string;
+  connected_on: number;
+  connected_time: number;
+  device: {
+    client: string;
+    is_browser: boolean;
+    is_mobile: boolean;
+    is_bot: boolean;
+    browser_family: string;
+    os_family: string;
+  };
+  location: {
+    city: string;
+    region: string;
+    country: string;
+    description: string;
+    lat: number;
+    lon: number;
+  };
+}
+
+export interface ListenersResponse {
+  listeners: Listener[];
+  total: number;
+  unique: number;
+}
+
+export interface ListenerStats {
+  currentListeners: number;
+  uniqueListeners: number;
+  totalListenTime: number; // in seconds
+  listeners: Listener[];
+}
+
+export async function fetchListeners(apiKey: string): Promise<ListenerStats> {
+  const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/listeners`;
+
+  const res = await fetch(url, {
+    headers: {
+      "X-API-Key": apiKey,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`AzuraCast API error: ${res.status}`);
+  }
+
+  const listeners: Listener[] = await res.json();
+
+  // Calculate total listen time from all connected listeners
+  const totalListenTime = listeners.reduce(
+    (acc, l) => acc + l.connected_time,
+    0,
+  );
+
+  // Count unique listeners by hash
+  const uniqueHashes = new Set(listeners.map((l) => l.hash));
+
+  return {
+    currentListeners: listeners.length,
+    uniqueListeners: uniqueHashes.size,
+    totalListenTime,
+    listeners,
+  };
+}
+
+export function formatDuration(seconds: number): string {
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = Math.floor(seconds % 60);
+
+  if (hours > 0) {
+    return `${hours}h ${minutes}m`;
+  }
+  if (minutes > 0) {
+    return `${minutes}m ${secs}s`;
+  }
+  return `${secs}s`;
+}
+
+export function formatListenHours(seconds: number): string {
+  const hours = (seconds / 3600).toFixed(1);
+  return `${hours}h`;
+}
+
+// Song performance reports
+export interface SongPerformance {
+  song: {
+    id: string;
+    text: string;
+    artist: string;
+    title: string;
+    album: string;
+    art: string | null;
+  };
+  stat_start: number;
+  stat_end: number;
+  stat_delta: number;
+}
+
+export interface MostPlayedSong {
+  song: {
+    id: string;
+    text: string;
+    artist: string;
+    title: string;
+    album: string;
+    art: string | null;
+  };
+  num_plays: number;
+}
+
+export interface BestWorstSongs {
+  best: SongPerformance[];
+  worst: SongPerformance[];
+}
+
+export interface ReportsOverviewResponse {
+  bestAndWorst: BestWorstSongs;
+  mostPlayed: MostPlayedSong[];
+}
+
+export async function fetchBestWorstSongs(
+  apiKey: string,
+): Promise<ReportsOverviewResponse> {
+  const url = `${AZURA_BASE_URL}/api/station/${AZURA_STATION}/reports/overview/best-and-worst`;
+
+  const res = await fetch(url, {
+    headers: {
+      "X-API-Key": apiKey,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error(`AzuraCast API error: ${res.status}`);
+  }
+
+  return res.json();
+}
