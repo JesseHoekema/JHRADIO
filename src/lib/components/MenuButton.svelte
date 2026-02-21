@@ -1,6 +1,7 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { X, Menu, Calendar, Send, Music, Home } from "@lucide/svelte";
+  import { X, Menu, Calendar, Send, Music, Home, Shield } from "@lucide/svelte";
+  import { authClient } from "$lib/auth-client";
 
   type Props = {
     variant?: "toolbar" | "glass";
@@ -8,6 +9,7 @@
 
   let { variant = "toolbar" }: Props = $props();
   let menuState = $state(false);
+  const session = authClient.useSession();
 
   function openPage(page: string) {
     switch (page) {
@@ -22,6 +24,9 @@
         break;
       case "request":
         window.location.href = "/request";
+        break;
+      case "admin":
+        window.location.href = "/manage/dashboard/home";
         break;
     }
     menuState = false;
@@ -79,6 +84,17 @@
         <Send class="w-4 h-4" />
         Request
       </button>
+      {#if $session.data}
+        <button 
+          transition:fly={{ x: -20, duration: 300, delay: 300 }}
+          class="menu-item"
+          class:glass={variant === "glass"}
+          onclick={() => openPage('admin')}
+        >
+          <Shield class="w-4 h-4" />
+          Admin
+        </button>
+      {/if}
     </div>
   {/if}
 </div>
