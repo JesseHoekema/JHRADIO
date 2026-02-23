@@ -11,7 +11,7 @@
   const UPDATE_INTERVAL = 1000;
 
   const { data }: { data: { nowPlaying: NowPlaying } } = $props();
-  
+
   let nowPlaying = $state<NowPlaying | null>(null);
   let ws = $state<WebSocket | null>(null);
   let currentSongId = $state<string | null>(null);
@@ -42,7 +42,8 @@
   });
 
   $effect(() => {
-    _progress = _duration > 0 ? Math.min((currentTime / _duration) * 100, 100) : 0;
+    _progress =
+      _duration > 0 ? Math.min((currentTime / _duration) * 100, 100) : 0;
   });
 
   const artUrl = $derived(_artUrl);
@@ -138,7 +139,7 @@
 
   $effect(() => {
     if (!audioEl) return;
-    
+
     const handlePlay = () => {
       isPlaying = true;
     };
@@ -149,36 +150,20 @@
       isPlaying = false;
     };
 
-    audioEl.addEventListener('play', handlePlay);
-    audioEl.addEventListener('pause', handlePause);
-    audioEl.addEventListener('ended', handleEnded);
-    
+    audioEl.addEventListener("play", handlePlay);
+    audioEl.addEventListener("pause", handlePause);
+    audioEl.addEventListener("ended", handleEnded);
+
     isPlaying = !audioEl.paused;
 
     return () => {
-      audioEl?.removeEventListener('play', handlePlay);
-      audioEl?.removeEventListener('pause', handlePause);
-      audioEl?.removeEventListener('ended', handleEnded);
+      audioEl?.removeEventListener("play", handlePlay);
+      audioEl?.removeEventListener("pause", handlePause);
+      audioEl?.removeEventListener("ended", handleEnded);
     };
   });
 
   onMount(() => {
-    // dev(s) thi button bypasses the autoplay restrictions also loop until audio is playing
-    let playTries = 0;
-    function tryPlayAudio() {
-      if (!audioEl) return;
-      audioEl.play().then(() => {
-        isPlaying = true;
-      }).catch(() => {
-        if (playTries < 10 && !isPlaying) {
-          playTries++;
-          setTimeout(tryPlayAudio, 400);
-        }
-      });
-    }
-    tryPlayAudio();
-    const hackPlayButton = document.getElementById("hack-btn-play") as HTMLButtonElement;
-    hackPlayButton?.click();
     if (nowPlaying) {
       resetTimingWithData(nowPlaying);
     }
@@ -207,7 +192,7 @@
 <div class="absolute inset-0 z-0 bg-black/50"></div>
 
 <div class="fixed top-5 right-5 z-30">
-  <img src="/assets/logo-removebg.png" alt="JHRADIO logo" class="w-14">
+  <img src="/assets/logo-removebg.png" alt="JHRADIO logo" class="w-14" />
 </div>
 
 <div class="fixed top-5 left-5 z-30">
@@ -217,19 +202,21 @@
 {#if nowPlaying}
   {#key nowPlaying.now_playing.song.id}
     <div
-      class="fixed bottom-15 left-15 right-20 z-30 flex items-end gap-8 player-container"
-      style="transform: scale({playerScale}) translateY({coverHovered ? '-12px' : '0'}); opacity: {playerOpacity}; transition: transform 0.45s cubic-bezier(.22,1,.36,1), opacity 1.2s cubic-bezier(.22,1,.36,1);"
-      onmouseenter={() => coverHovered = true}
-      onmouseleave={() => coverHovered = false}
+      class="fixed bottom-6 left-4 right-4 z-30 flex flex-col items-center gap-4 text-center player-container sm:bottom-15 sm:left-15 sm:right-20 sm:flex-row sm:items-end sm:gap-8 sm:text-left"
+      style="transform: scale({playerScale}) translateY({coverHovered
+        ? '-12px'
+        : '0'}); opacity: {playerOpacity}; transition: transform 0.45s cubic-bezier(.22,1,.36,1), opacity 1.2s cubic-bezier(.22,1,.36,1);"
+      onmouseenter={() => (coverHovered = true)}
+      onmouseleave={() => (coverHovered = false)}
       role="region"
       aria-label="Now playing player"
     >
-      <div 
-        class="relative flex flex-col items-center cover-wrapper"
+      <div
+        class="cover-wrapper relative flex w-full flex-col items-center px-2 sm:w-auto sm:px-0"
       >
         {#key nowPlaying.now_playing.song.id}
           <img
-            class="w-64 h-64 rounded-lg shadow-2xl"
+            class="aspect-square w-full rounded-lg shadow-2xl sm:h-64 sm:w-64"
             src={artUrl}
             alt="Album cover"
             transition:fade={{
@@ -240,8 +227,8 @@
         {/key}
         <button
           class="play-button-overlay"
-          class:visible={coverHovered}
-          aria-label={isPlaying ? 'Pause' : 'Play'}
+          class:visible={coverHovered || !isPlaying}
+          aria-label={isPlaying ? "Pause" : "Play"}
           onclick={togglePlayPause}
         >
           {#if isPlaying}
@@ -251,16 +238,16 @@
           {/if}
         </button>
       </div>
-      <div class="info pb-4 flex-1">
+      <div class="info w-full pb-0 sm:flex-1 sm:pb-4">
         {#key nowPlaying.now_playing.song.id}
           <div
-            class="text-white font-sans text-6xl font-bold mb-2"
+            class="mb-2 font-sans text-3xl font-bold text-white sm:text-6xl"
             transition:slide={{ duration: 400 }}
           >
             {nowPlaying.now_playing.song.title}
           </div>
           <div
-            class="subtitle text-gray-300 text-lg mb-6"
+            class="subtitle mb-4 text-base text-gray-300 sm:mb-6 sm:text-lg"
             transition:slide={{ duration: 400 }}
           >
             {nowPlaying.now_playing.song.artist}
@@ -280,10 +267,8 @@
   {/key}
 {/if}
 
-
-<!-- button for autoplay bypass -->
-<button onclick={togglePlayPause} id="hack-btn-play" style="opacity: 0;">.</button>
-<audio src={config.AZURA_MP3} id="audio-src" bind:this={audioEl} {volume}></audio>
+<audio src={config.AZURA_MP3} id="audio-src" bind:this={audioEl} {volume}
+></audio>
 
 <style>
   .cover-wrapper {
@@ -306,7 +291,9 @@
     cursor: pointer;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s, transform 0.3s;
+    transition:
+      opacity 0.3s,
+      transform 0.3s;
     z-index: 40;
     box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.25);
   }
@@ -327,7 +314,6 @@
     border-radius: 999px;
     transition: width 0.3s ease-out;
   }
-
 
   .subtitle {
     opacity: 0.9;
