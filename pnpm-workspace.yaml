@@ -1,2 +1,6 @@
 onlyBuiltDependencies:
+  - "@prisma/engines"
   - esbuild
+  - prisma
+ignoredBuiltDependencies:
+  - svelte-preprocess

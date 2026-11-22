@@ -1,9 +1,9 @@
 FROM node:24-alpine AS builder
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@10.33.2 --activate
 
-COPY package.json pnpm-lock.yaml* ./
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
@@ -15,7 +15,7 @@ RUN pnpm prune --prod
 FROM node:24-alpine
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@10.33.2 --activate
 
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
