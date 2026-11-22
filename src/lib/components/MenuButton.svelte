@@ -1,7 +1,8 @@
 <script lang="ts">
   import { fly } from "svelte/transition";
-  import { X, Menu, Calendar, Send, Music, Home, Shield } from "@lucide/svelte";
+  import { X, Menu, Calendar, Send, Music, Home, Shield, TreePine } from "@lucide/svelte";
   import { authClient } from "$lib/auth-client";
+  import { siteConfig } from "$lib/config";
 
   type Props = {
     variant?: "toolbar" | "glass";
@@ -24,6 +25,9 @@
         break;
       case "request":
         window.location.href = "/request";
+        break;
+      case "christmas":
+        window.location.href = "/christmas";
         break;
       case "admin":
         window.location.href = "/manage/dashboard/home";
@@ -83,6 +87,16 @@
       >
         <Send class="w-4 h-4" />
         Request
+      </button>
+      <button
+        transition:fly={{ x: -20, duration: 300, delay: 250 }}
+        class="menu-item"
+        class:glass={variant === "glass"}
+        onclick={() => openPage("christmas")}
+        style:display={siteConfig.christmasEnabled ? '' : 'none'}
+      >
+        <TreePine class="w-4 h-4" />
+        Christmas
       </button>
       {#if $session.data}
         <button

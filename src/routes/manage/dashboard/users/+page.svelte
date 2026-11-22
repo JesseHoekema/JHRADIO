@@ -17,12 +17,11 @@
     name: string;
     email: string;
     emailVerified: boolean;
-    createdAt: string;
+    createdAt: string | Date;
     image: string | null;
   };
 
-  const props = $props<{ data: PageData }>();
-  const data = $derived(props.data);
+  const { data }: { data: PageData } = $props();
 
   let users = $state<User[]>([]);
   let seededUsers = $state(false);
@@ -93,8 +92,8 @@
     users = users.filter((u) => u.id !== id);
   };
 
-  const formatDate = (dateStr: string) => {
-    const d = new Date(dateStr);
+  const formatDate = (dateStr: string | Date) => {
+    const d = dateStr instanceof Date ? dateStr : new Date(dateStr);
     return d.toLocaleDateString(undefined, {
       year: "numeric",
       month: "short",

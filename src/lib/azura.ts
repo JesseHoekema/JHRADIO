@@ -1,10 +1,13 @@
 const AZURA_BASE_URL = "https://azura.jessehoekema.com";
 const AZURA_STATION = "jhradio";
+const AZURA_CHRISTMAS_STATION = "jhradio_christmas";
 
 export const config = {
   AZURA_BASE_URL,
   AZURA_STATION,
   AZURA_MP3: `${AZURA_BASE_URL}/listen/${AZURA_STATION}/radio.mp3`,
+  AZURA_CHRISTMAS_STATION,
+  AZURA_CHRISTMAS_MP3: `${AZURA_BASE_URL}/listen/${AZURA_CHRISTMAS_STATION}/radio.mp3`,
 };
 
 export interface NowPlaying {
@@ -36,6 +39,15 @@ export function getProgress(np: NowPlaying): number {
   const { elapsed, duration } = np.now_playing;
   if (!duration) return 0;
   return Math.min(100, (elapsed / duration) * 100);
+}
+
+export async function fetchChristmasNowPlaying(): Promise<NowPlaying> {
+  const url = `${AZURA_BASE_URL}/api/nowplaying/${AZURA_CHRISTMAS_STATION}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`AzuraCast API error: ${res.status}`);
+  }
+  return res.json();
 }
 
 export async function fetchNowPlaying(): Promise<NowPlaying> {
@@ -106,6 +118,16 @@ export function timeAgo(playedAt: number): string {
 
 export async function fetchRecentlyPlayed(): Promise<SongHistoryEntry[]> {
   const url = `${AZURA_BASE_URL}/api/nowplaying/${AZURA_STATION}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`AzuraCast API error: ${res.status}`);
+  }
+  const data = await res.json();
+  return data.song_history as SongHistoryEntry[];
+}
+
+export async function fetchChristmasRecentlyPlayed(): Promise<SongHistoryEntry[]> {
+  const url = `${AZURA_BASE_URL}/api/nowplaying/${AZURA_CHRISTMAS_STATION}`;
   const res = await fetch(url);
   if (!res.ok) {
     throw new Error(`AzuraCast API error: ${res.status}`);

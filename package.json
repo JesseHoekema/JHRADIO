@@ -45,6 +45,7 @@
 		"@prisma/client": "^7.3.0",
 		"better-auth": "^1.4.18",
 		"fullcalendar-svelte": "^0.0.1",
-		"svelte-motion": "^0.12.2"
+		"svelte-motion": "^0.12.2",
+		"svelte-snow": "^1.0.1"
 	}
 }

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="25 -155 515 320" width="515" height="320">
+<defs>
+<clipPath id="hat-body">
+<path d="M77.8 44.7 C69.8 -70 170 -150 262 -150 C362 -150 446 -86 484 20 C494 50 500 80 500 112 C484 78 452 46 410 32 C400 36 430.2 32.7 422.2 44.7 A308 308 0 0 0 77.8 44.7 Z"/>
+</clipPath>
+</defs>
+<path d="M77.8 44.7 C69.8 -70 170 -150 262 -150 C362 -150 446 -86 484 20 C494 50 500 80 500 112 C484 78 452 46 410 32 C400 36 430.2 32.7 422.2 44.7 A308 308 0 0 0 77.8 44.7 Z" fill="#c8102e"/>
+<path d="M282 -136 C372 -126 446 -54 474 46 C452 26 424 14 396 10 C380 -54 340 -108 282 -136 Z" fill="#9e0b22"/>
+<g clip-path="url(#hat-body)" fill="none" stroke="#171717">
+<path d="M55.9 68.7 A302 302 0 0 1 444.1 68.7" stroke-width="66" stroke-linecap="round"/>
+<circle cx="500" cy="126" r="34" stroke-width="8"/>
+</g>
+<path d="M55.9 68.7 A302 302 0 0 1 444.1 68.7" fill="none" stroke="#ffffff" stroke-width="54" stroke-linecap="round"/>
+<circle cx="500" cy="126" r="34" fill="#ffffff"/>
+</svg>
